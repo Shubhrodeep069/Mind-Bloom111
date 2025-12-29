@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindBloom | Your Mental Wellness Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen">
+        <div class="floating-element circle" style="top: 10%; left: 5%;"></div>
+        <div class="floating-element triangle" style="bottom: 10%; right: 5%;"></div>
+
+        <div class="welcome-logo animate__animated animate__fadeInDown">
+            <i class="fas fa-spa"></i>
+            <h1>🌱 MindBloom 🌸</h1>
+            <p class="welcome-tagline">Cultivate your mental wellbeing with daily care and mindful reflection</p>
+        </div>
+
+        <div class="welcome-features animate__animated animate__fadeInUp">
+            <div class="feature animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Gentle Check-Ins</h3>
+                <p>Reflect on your wellbeing with thoughtful, non-judgmental questions</p>
+            </div>
+            <div class="feature animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                <i class="fas fa-chart-line"></i>
+                <h3>Track Your Journey</h3>
+                <p>Visualize your emotional patterns and growth over time</p>
+            </div>
+            <div class="feature animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                <i class="fas fa-lightbulb"></i>
+                <h3>Personalized Insights</h3>
+                <p>Receive tailored suggestions based on your current state</p>
+            </div>
+        </div>
+
+        <div class="start-buttons animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+            <button class="btn btn-primary btn-start" id="startJourney">
+                <i class="fas fa-seedling"></i> Begin My Wellness Journey
+            </button>
+            <button class="btn btn-outline btn-start" id="exploreFirst">
+                <i class="fas fa-compass"></i> Explore Mindfully
+            </button>
+        </div>
+
+        <div class="start-options animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+            <p>Your privacy matters. All data stays on your device. <a href="#" id="learnMore">Learn more</a></p>
+        </div>
+    </div>
+
+    <!-- Main App Content (Initially Hidden) -->
+    <div class="container" id="mainApp" style="display: none;">
+        <header>
+            <div class="logo">
+                <i class="fas fa-spa"></i>
+                <h1>MindBloom</h1>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-outline btn-small" id="privacyBtn">
+                    <i class="fas fa-user-shield"></i> Privacy
+                </button>
+                <button class="btn btn-primary btn-small" id="checkinBtn">
+                    <i class="fas fa-heartbeat"></i> Check-In
+                </button>
+            </div>
+        </header>
+
+        <div class="disclaimer">
+            <strong>Important:</strong> This tool is for self-reflection and wellness tracking only. It is not a medical
+            diagnostic tool. If you are experiencing significant distress, please contact a mental health professional
+            or a helpline in your country.
+        </div>
+
+        <!-- NEW: Daily Affirmations Section (Always Visible) -->
+        <div class="section affirmations-section animate__animated animate__fadeIn">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> Daily Affirmation
+            </h2>
+            <div class="affirmation-container">
+                <p>Start your day with a gentle reminder of your worth and strength</p>
+                <div class="affirmation-text" id="affirmationText">
+                    <!-- Affirmation will be loaded here -->
+                </div>
+                <div class="affirmation-controls">
+                    <button class="btn btn-outline btn-small" id="newAffirmation">
+                        <i class="fas fa-redo"></i> New Affirmation
+                    </button>
+                    <button class="btn btn-outline btn-small" id="speakAffirmation">
+                        <i class="fas fa-volume-up"></i> Hear It
+                    </button>
+                    <i class="fas fa-star affirmation-star" id="favoriteAffirmation" title="Save to favorites"></i>
+                </div>
+                <div class="affirmation-stats" style="margin-top: 15px; font-size: 14px; color: var(--gray);">
+                    <span id="affirmationCount">0</span> affirmations shared today
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="checkin">🌸 Mood Check-In</div>
+            <div class="tab" data-tab="daily">🌿 Daily Mood</div>
+            <div class="tab" data-tab="tools">🎨 Wellness Tools</div>
+            <div class="tab" data-tab="goals">🎯 My Goals</div>
+            <div class="tab" data-tab="history">📊 Mood History</div>
+            <div class="tab" data-tab="privacy">🔒 Privacy & Data</div>
+        </div>
+
+        <!-- Mood Check-In Tab -->
+        <div class="tab-content active" id="checkin">
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-clipboard-check"></i> Mindful Reflection
+                </h2>
+                <p class="section-description">Take a gentle moment to reflect on your experiences over the past week.
+                    There are no right or wrong answers.</p>
+
+                <div id="questionsContainer">
+                    <!-- Questions will be dynamically generated -->
+                </div>
+
+                <div class="submit-container">
+                    <button class="btn btn-primary" id="submitCheckin">
+                        <i class="fas fa-chart-line"></i> Discover My Insights
+                    </button>
+                </div>
+            </div>
+
+            <div class="section" id="resultSection" style="display: none;">
+                <div id="moodResultContent">
+                    <!-- Mood result will be dynamically generated -->
+                </div>
+            </div>
+
+            <div class="section" id="suggestionsSection" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-lightbulb"></i> Nurturing Suggestions
+                </h2>
+                <div id="suggestionsContent">
+                    <!-- Suggestions will be dynamically generated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Mood Tab -->
+        <div class="tab-content" id="daily">
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-day"></i> Today's Emotional Landscape
+                </h2>
+                <p>How is your heart feeling today? Gently select the emoji that resonates most with your current state.
+                </p>
+
+                <div class="mood-slider-container">
+                    <div class="emoji-slider">
+                        <div class="emoji-option" data-value="5">
+                            <div class="emoji">😄</div>
+                            <div class="emoji-label">Blooming</div>
+                        </div>
+                        <div class="emoji-option" data-value="4">
+                            <div class="emoji">🙂</div>
+                            <div class="emoji-label">Peaceful</div>
+                        </div>
+                        <div class="emoji-option" data-value="3">
+                            <div class="emoji">😐</div>
+                            <div class="emoji-label">Balanced</div>
+                        </div>
+                        <div class="emoji-option" data-value="2">
+                            <div class="emoji">😔</div>
+                            <div class="emoji-label">Tender</div>
+                        </div>
+                        <div class="emoji-option" data-value="1">
+                            <div class="emoji">😣</div>
+                            <div class="emoji-label">Heavy</div>
+                        </div>
+                    </div>
+
+                    <div class="note-container">
+                        <label for="dailyNote"><i class="fas fa-pen"></i> Optional Reflection (what's blooming or
+                            wilting in your garden today?):</label>
+                        <textarea id="dailyNote"
+                            placeholder="This space is just for you. Write whatever feels right, or leave it blank..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" id="saveDailyMood">
+                        <i class="fas fa-save"></i> Plant Today's Seed
+                    </button>
+                </div>
+
+                <div id="dailyMoodSaved"
+                    style="display: none; text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: var(--border-radius); color: #065F46;">
+                    <i class="fas fa-check-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <h3>Thank you for tending to your garden today</h3>
+                    <p>Your reflection has been saved. Every small act of self-awareness helps your wellbeing bloom.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Wellness Tools Tab -->
+        <div class="tab-content" id="tools">
+            <!-- Breathing Visualizer -->
+            <div class="section breathing-section">
+                <h2 class="section-title">
+                    <i class="fas fa-wind"></i> Calming Breath
+                </h2>
+                <div class="breathing-container">
+                    <p>Find your center with this simple breathing exercise. Follow the circle's rhythm.</p>
+
+                    <div class="breathing-circle" id="breathingCircle">
+                        <div class="breathing-text" id="breathingText">Breathe In</div>
+                    </div>
+
+                    <div class="breathing-instruction" id="breathingInstruction">
+                        Inhale slowly through your nose for 4 seconds
+                    </div>
+
+                    <div class="breathing-timer">
+                        <i class="fas fa-clock"></i> Time: <span id="breathTimer">0:00</span>
+                    </div>
+
+                    <div class="breathing-controls">
+                        <button class="btn btn-primary" id="startBreathing">
+                            <i class="fas fa-play"></i> Start Breathing
+                        </button>
+                        <button class="btn btn-outline" id="stopBreathing" style="display: none;">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="btn btn-outline" id="resetBreathing">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+
+                    <div style="margin-top: 25px; font-size: 14px; color: var(--gray);">
+                        <i class="fas fa-info-circle"></i> Tip: Practice this for 2-5 minutes whenever you feel anxious
+                        or stressed
+                    </div>
+                </div>
+            </div>
+
+            <!-- Creative Expression Tools -->
+            <div class="section creative-section">
+                <h2 class="section-title">
+                    <i class="fas fa-palette"></i> Creative Expression
+                </h2>
+                <div class="creative-container">
+                    <p>Express your emotions through creative activities. Choose what feels right for you today.</p>
+
+                    <div class="creative-tools">
+                        <div class="creative-tool" data-tool="draw">
+                            <i class="fas fa-paint-brush"></i>
+                            <h3>Mood Drawing</h3>
+                            <p>Draw how you feel using colors and shapes</p>
+                        </div>
+                        <div class="creative-tool" data-tool="color">
+                            <i class="fas fa-fill-drip"></i>
+                            <h3>Color Therapy</h3>
+                            <p>Fill spaces with colors that match your mood</p>
+                        </div>
+                        <div class="creative-tool" data-tool="write">
+                            <i class="fas fa-pen-fancy"></i>
+                            <h3>Free Writing</h3>
+                            <p>Express thoughts freely without judgment</p>
+                        </div>
+                        <div class="creative-tool" data-tool="music">
+                            <i class="fas fa-music"></i>
+                            <h3>Soundscape</h3>
+                            <p>Create a mood-based sound composition</p>
+                        </div>
+                    </div>
+
+                    <!-- Drawing Canvas (Hidden by default) -->
+                    <div class="drawing-canvas-container" id="drawingContainer" style="display: none;">
+                        <h3>Draw Your Emotional Landscape</h3>
+                        <p>Use colors to express what words cannot</p>
+
+                        <div class="color-picker">
+                            <div class="color-option selected" style="background: #EF4444;" data-color="#EF4444"></div>
+                            <div class="color-option" style="background: #F59E0B;" data-color="#F59E0B"></div>
+                            <div class="color-option" style="background: #10B981;" data-color="#10B981"></div>
+                            <div class="color-option" style="background: #3B82F6;" data-color="#3B82F6"></div>
+                            <div class="color-option" style="background: #8B5CF6;" data-color="#8B5CF6"></div>
+                            <div class="color-option" style="background: #EC4899;" data-color="#EC4899"></div>
+                            <div class="color-option" style="background: #000000;" data-color="#000000"></div>
+                        </div>
+
+                        <canvas id="drawingCanvas" width="600" height="400" class="drawing-canvas"></canvas>
+
+                        <div class="drawing-controls">
+                            <button class="btn btn-outline btn-small" id="clearCanvas">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                            <button class="btn btn-outline btn-small" id="saveDrawing">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                            <button class="btn btn-outline btn-small" id="shareDrawing">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                            <button class="btn btn-outline btn-small" id="closeDrawing">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Goals Tracking Tab -->
+        <div class="tab-content" id="goals">
+            <div class="section goals-section">
+                <h2 class="section-title">
+                    <i class="fas fa-bullseye"></i> My Wellness Goals
+                </h2>
+                <div class="goals-container">
+                    <p>Set gentle intentions for your wellbeing journey. Celebrate every small step forward.</p>
+
+                    <div class="goals-grid" id="goalsGrid">
+                        <!-- Goals will be dynamically generated -->
+                    </div>
+
+                    <button class="btn btn-primary add-goal-btn" id="addGoalBtn">
+                        <i class="fas fa-plus"></i> Add New Goal
+                    </button>
+                    <button class="btn btn-outline add-goal-btn" id="deleteAllGoals" style="margin-top: 15px; border-color: var(--danger); color: var(--danger);">
+    <i class="fas fa-trash-alt"></i> Delete All Goals
+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mood History Tab -->
+        <div class="tab-content" id="history">
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-bar"></i> Your Wellness Journey
+                </h2>
+
+                <div class="history-controls">
+                    <div>
+                        <h3>Emotional Seasons & Patterns</h3>
+                        <p>Observe the natural ebb and flow of your inner landscape</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline btn-small" id="weekView">This Week</button>
+                        <button class="btn btn-outline btn-small" id="monthView">This Month</button>
+                        <button class="btn btn-outline btn-small" id="detailedView">Detailed</button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="moodChart"></canvas>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="currentStreak">0</div>
+                        <div class="stat-label">Day Reflection Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgMood">0</div>
+                        <div class="stat-label">Weekly Emotional Climate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="bestDay">-</div>
+                        <div class="stat-label">Most Blooming Day</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="checkinCount">0</div>
+                        <div class="stat-label">Total Moments of Reflection</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Tab -->
+        <div class="tab-content" id="privacy">
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-user-shield"></i> Your Sanctuary of Privacy
+                </h2>
+                <p>Your reflections are sacred. Here's how we honor and protect your inner world:</p>
+
+                <div class="privacy-content">
+                    <div class="privacy-card">
+                        <i class="fas fa-leaf"></i>
+                        <h3>Sacred & Local</h3>
+                        <p>All your reflections grow locally on your device. Nothing is sent to any external garden.</p>
+                    </div>
+                    <div class="privacy-card">
+                        <i class="fas fa-key"></i>
+                        <h3>Your Private Garden</h3>
+                        <p>Your emotional landscape is yours alone. No one else tends to this garden unless you invite
+                            them.</p>
+                    </div>
+                    <div class="privacy-card">
+                        <i class="fas fa-hands"></i>
+                        <h3>Gentle Stewardship</h3>
+                        <p>You are the gentle gardener of your data. Tend to it, export it, or let it go as feels right.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="danger-zone">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Garden Management</h3>
+                    <p>As the gardener of your emotional landscape, you may tend to your data as needed.</p>
+                    <div style="display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
+                        <button class="btn btn-outline" id="exportData">
+                            <i class="fas fa-download"></i> Harvest My Data
+                        </button>
+                        <button class="btn btn-outline" id="clearHistory">
+                            <i class="fas fa-trash-alt"></i> Prune My History
+                        </button>
+                        <button class="btn" id="deleteAllData"
+                            style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: white;">
+                            <i class="fas fa-skull-crossbones"></i> Clear The Garden
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>MindBloom Wellness Sanctuary | Cultivated with care for your inner garden</p>
+            <p>Remember: This gentle tool complements, but never replaces, professional care when needed.</p>
+            <p style="margin-top: 15px; font-size: 14px;">
+                <i class="fas fa-heart footer-heart"></i> Your journey is honored here. No tracking. No analytics. Just
+                reflection.
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

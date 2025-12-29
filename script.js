@@ -571,12 +571,12 @@ function showDeleteSuccessMessage(goalTitle) {
         ];
 
         const responseOptions = [
-            { value: 1, label: "Rarely", text: "Almost never" },
-            { value: 2, label: "Occasionally", text: "Once in a while" },
-            { value: 3, label: "Sometimes", text: "About half the time" },
-            { value: 4, label: "Often", text: "More often than not" },
-            { value: 5, label: "Mostly", text: "Almost always" }
-        ];
+  { "value": 1, "label": "Not at all" },
+  { "value": 2, "label": "Slightly" },
+  { "value": 3, "label": "Moderately" },
+  { "value": 4, "label": "Very much" },
+  { "value": 5, "label": "Completely" }
+];
 
         const moodCategories = [
             { min: 30, max: 35, emoji: "🌸", name: "Blooming", description: "Your inner garden appears to be flourishing with good energy and emotional balance.", color: "#10B981" },
@@ -1522,3 +1522,4 @@ function showDeleteSuccessMessage(goalTitle) {
             return moodEmojisByScore[clampedScore] || "😐";
 
         }  
+

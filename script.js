@@ -560,13 +560,14 @@ function showDeleteSuccessMessage(goalTitle) {
 
         // ========== EXISTING CODE ==========
         const moodQuestions = [
-            { id: 1, text: "Over the past week, how often did you wake up feeling rested and renewed?" },
-            { id: 2, text: "How frequently were you able to stay present with your tasks without mental wandering?" },
-            { id: 3, text: "How often did moments of joy or contentment naturally arise in your day?" },
-            { id: 4, text: "How frequently did you feel a sense of connection or support in your relationships?" },
-            { id: 5, text: "How often did you experience feelings of peace and ease in your body?" },
-            { id: 6, text: "How frequently did you feel an inner motivation to engage with your daily rhythms?" },
-            { id: 7, text: "How often did you feel able to navigate your responsibilities with a sense of flow?" }
+
+{ id: 1, text: "Did you wake up feeling rested and renewed today?" },  
+{ id: 2, text: "Were you able to stay present with your tasks today without mental wandering?" },  
+{ id: 3, text: "Did any moments of joy or contentment naturally arise today?" },  
+{ id: 4, text: "Did you feel a sense of connection or support in your relationships today?" },  
+{ id: 5, text: "Did you experience feelings of peace and ease in your body today?" },  
+{ id: 6, text: "Did you feel an inner motivation to engage with your daily rhythms today?" },  
+{ id: 7, text: "Were you able to navigate your responsibilities with a sense of flow today?" }
         ];
 
         const responseOptions = [
@@ -1519,4 +1520,5 @@ function showDeleteSuccessMessage(goalTitle) {
             // Clamp between 7 and 35
             const clampedScore = Math.max(7, Math.min(35, roundedScore));
             return moodEmojisByScore[clampedScore] || "😐";
+
         }  

@@ -1,5 +1,4 @@
-
-        // Application Data and State
+ // Application Data and State
         const appState = {
             currentMoodScore: 0,
             dailyMoods: [],
@@ -10,6 +9,14 @@
             goals: [],
             drawings: []
         };
+        // Add to your existing appState or as new variables
+let colorTherapyHistory = [];
+let writingEntries = [];
+let currentMoodColor = '#EF4444';
+let filledShapes = [];
+let writingTimer = null;
+let writingStartTime = null;
+let writingTimerInterval = null;
 
         // ========== NEW FEATURE 1: Daily Affirmations ==========
         const affirmations = [
@@ -304,15 +311,15 @@
 
 
         function deleteGoal(goalId) {
-    // Find the goal to get its title for confirmation
-    const goalToDelete = goals.find(g => g.id === goalId);
-    
-    if (!goalToDelete) return;
-    
-    // Create a custom confirmation modal
-    const confirmationModal = document.createElement('div');
-    confirmationModal.className = 'goal-delete-modal';
-    confirmationModal.style.cssText = `
+            // Find the goal to get its title for confirmation
+            const goalToDelete = goals.find(g => g.id === goalId);
+
+            if (!goalToDelete) return;
+
+            // Create a custom confirmation modal
+            const confirmationModal = document.createElement('div');
+            confirmationModal.className = 'goal-delete-modal';
+            confirmationModal.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
@@ -325,8 +332,8 @@
         z-index: 2000;
         animation: fadeIn 0.3s ease;
     `;
-    
-    confirmationModal.innerHTML = `
+
+            confirmationModal.innerHTML = `
         <div style="background: white; padding: 30px; border-radius: var(--border-radius); max-width: 400px; width: 90%; box-shadow: var(--shadow-hover);">
             <h3 style="color: var(--danger); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
                 <i class="fas fa-exclamation-triangle"></i> Delete Goal
@@ -346,84 +353,84 @@
             </div>
         </div>
     `;
-    
-    document.body.appendChild(confirmationModal);
-    
-    // Add event listeners for modal buttons
-    document.getElementById('cancelDelete').addEventListener('click', function() {
-        confirmationModal.remove();
-    });
-    
-    document.getElementById('confirmDelete').addEventListener('click', function() {
-        // Remove the goal from the array
-        const goalIndex = goals.findIndex(g => g.id === goalId);
-        if (goalIndex !== -1) {
-            // Add animation to the goal card before removing
-            const goalCard = document.getElementById(`goal-${goalId}`);
-            if (goalCard) {
-                goalCard.classList.add('animate__animated', 'animate__fadeOutLeft');
+
+            document.body.appendChild(confirmationModal);
+
+            // Add event listeners for modal buttons
+            document.getElementById('cancelDelete').addEventListener('click', function () {
+                confirmationModal.remove();
+            });
+
+            document.getElementById('confirmDelete').addEventListener('click', function () {
+                // Remove the goal from the array
+                const goalIndex = goals.findIndex(g => g.id === goalId);
+                if (goalIndex !== -1) {
+                    // Add animation to the goal card before removing
+                    const goalCard = document.getElementById(`goal-${goalId}`);
+                    if (goalCard) {
+                        goalCard.classList.add('animate__animated', 'animate__fadeOutLeft');
+                        setTimeout(() => {
+                            // Remove goal from array
+                            goals.splice(goalIndex, 1);
+                            saveGoals();
+                            renderGoals();
+                            confirmationModal.remove();
+
+                            // Show success message
+                            showDeleteSuccessMessage(goalToDelete.title);
+                        }, 500);
+                    } else {
+                        goals.splice(goalIndex, 1);
+                        saveGoals();
+                        renderGoals();
+                        confirmationModal.remove();
+                        showDeleteSuccessMessage(goalToDelete.title);
+                    }
+                }
+            });
+
+            // Close modal when clicking outside
+            confirmationModal.addEventListener('click', function (e) {
+                if (e.target === confirmationModal) {
+                    confirmationModal.remove();
+                }
+            });
+        }
+
+
+        // Function to delete all goals
+        function deleteAllGoals() {
+            if (goals.length === 0) {
+                alert("You don't have any goals to delete.");
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete all ${goals.length} goals? This action cannot be undone.`)) {
+                // Animate out all goal cards
+                document.querySelectorAll('.goal-card').forEach(card => {
+                    card.classList.add('animate__animated', 'animate__fadeOutDown');
+                });
+
                 setTimeout(() => {
-                    // Remove goal from array
-                    goals.splice(goalIndex, 1);
+                    // Clear goals array
+                    goals = [];
                     saveGoals();
                     renderGoals();
-                    confirmationModal.remove();
-                    
+
                     // Show success message
-                    showDeleteSuccessMessage(goalToDelete.title);
+                    showDeleteSuccessMessage(`All ${goals.length} goals`);
                 }, 500);
-            } else {
-                goals.splice(goalIndex, 1);
-                saveGoals();
-                renderGoals();
-                confirmationModal.remove();
-                showDeleteSuccessMessage(goalToDelete.title);
             }
         }
-    });
-    
-    // Close modal when clicking outside
-    confirmationModal.addEventListener('click', function(e) {
-        if (e.target === confirmationModal) {
-            confirmationModal.remove();
-        }
-    });
-}
 
+        // Add to your initializeEventListeners() function:
+        document.getElementById('deleteAllGoals').addEventListener('click', deleteAllGoals);
 
-// Function to delete all goals
-function deleteAllGoals() {
-    if (goals.length === 0) {
-        alert("You don't have any goals to delete.");
-        return;
-    }
-    
-    if (confirm(`Are you sure you want to delete all ${goals.length} goals? This action cannot be undone.`)) {
-        // Animate out all goal cards
-        document.querySelectorAll('.goal-card').forEach(card => {
-            card.classList.add('animate__animated', 'animate__fadeOutDown');
-        });
-        
-        setTimeout(() => {
-            // Clear goals array
-            goals = [];
-            saveGoals();
-            renderGoals();
-            
-            // Show success message
-            showDeleteSuccessMessage(`All ${goals.length} goals`);
-        }, 500);
-    }
-}
-
-// Add to your initializeEventListeners() function:
-document.getElementById('deleteAllGoals').addEventListener('click', deleteAllGoals);
-
-function showDeleteSuccessMessage(goalTitle) {
-    // Create a temporary success message
-    const successMessage = document.createElement('div');
-    successMessage.className = 'delete-success-message';
-    successMessage.style.cssText = `
+        function showDeleteSuccessMessage(goalTitle) {
+            // Create a temporary success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'delete-success-message';
+            successMessage.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -438,24 +445,24 @@ function showDeleteSuccessMessage(goalTitle) {
         align-items: center;
         gap: 10px;
     `;
-    
-    successMessage.innerHTML = `
+
+            successMessage.innerHTML = `
         <i class="fas fa-check-circle" style="font-size: 20px;"></i>
         <span>Goal "${goalTitle}" deleted successfully</span>
     `;
-    
-    document.body.appendChild(successMessage);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        successMessage.style.animation = 'slideOutRight 0.5s ease';
-        setTimeout(() => {
-            if (document.body.contains(successMessage)) {
-                successMessage.remove();
-            }
-        }, 500);
-    }, 3000);
-}
+
+            document.body.appendChild(successMessage);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                successMessage.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(successMessage)) {
+                        successMessage.remove();
+                    }
+                }, 500);
+            }, 3000);
+        }
 
         // ========== NEW FEATURE 4: Creative Expression Tools ==========
         let isDrawing = false;
@@ -560,7 +567,6 @@ function showDeleteSuccessMessage(goalTitle) {
 
         // ========== EXISTING CODE ==========
         const moodQuestions = [
-
 { id: 1, text: "Did you wake up feeling rested and renewed today?" },  
 { id: 2, text: "Were you able to stay present with your tasks today without mental wandering?" },  
 { id: 3, text: "Did any moments of joy or contentment naturally arise today?" },  
@@ -571,11 +577,11 @@ function showDeleteSuccessMessage(goalTitle) {
         ];
 
         const responseOptions = [
-  { "value": 1, "label": "Not at all" },
-  { "value": 2, "label": "Slightly" },
-  { "value": 3, "label": "Moderately" },
-  { "value": 4, "label": "Very much" },
-  { "value": 5, "label": "Completely" }
+  { "value": 1, "label": "Not at all", "text": "Did not experience this today" },
+  { "value": 2, "label": "Slightly", "text": "Felt it only a little" },
+  { "value": 3, "label": "Moderately", "text": "Felt it to a fair degree" },
+  { "value": 4, "label": "Very much", "text": "Felt it strongly today" },
+  { "value": 5, "label": "Completely", "text": "Felt it fully and clearly" }
 ];
 
         const moodCategories = [
@@ -669,17 +675,21 @@ function showDeleteSuccessMessage(goalTitle) {
         }
 
         function initializeApp() {
-            initializeQuestions();
-            initializeTabs();
-            initializeEventListeners();
-            updateHistoryUI();
-            loadRandomAffirmation();
-            renderGoals();
-            setupDrawingCanvas();
-
-            // Setup new features
-            setupNewFeatures();
-        }
+    initializeQuestions();
+    initializeTabs();
+    initializeEventListeners();
+    updateHistoryUI();
+    loadRandomAffirmation();
+    renderGoals();
+    setupDrawingCanvas();
+    
+    // Setup new features
+    setupNewFeatures();
+    
+    // Load saved data for new features
+    colorTherapyHistory = JSON.parse(localStorage.getItem('mindbloom_color_therapy')) || [];
+    writingEntries = JSON.parse(localStorage.getItem('mindbloom_writing_entries')) || [];
+}
 
         function setupNewFeatures() {
             // Affirmations
@@ -693,21 +703,767 @@ function showDeleteSuccessMessage(goalTitle) {
             document.getElementById('resetBreathing').addEventListener('click', resetBreathingExercise);
 
             // Creative Tools
-            document.querySelectorAll('.creative-tool').forEach(tool => {
-                tool.addEventListener('click', function () {
-                    const toolType = this.getAttribute('data-tool');
+            // ========== COLOR THERAPY FUNCTIONS ==========
+let currentMoodColor = '#EF4444';
+let filledShapes = [];
+let colorTherapyHistory = JSON.parse(localStorage.getItem('mindbloom_color_therapy')) || [];
 
-                    if (toolType === 'draw') {
-                        document.getElementById('drawingContainer').style.display = 'block';
-                        this.classList.add('animate__animated', 'animate__pulse');
-                        setTimeout(() => {
-                            this.classList.remove('animate__animated', 'animate__pulse');
-                        }, 1000);
-                    } else {
-                        alert(`Opening ${toolType} tool... This feature is coming soon!`);
-                    }
-                });
-            });
+function setupColorTherapy() {
+    // Initialize color selection
+    document.querySelectorAll('.mood-color-option').forEach(color => {
+        color.addEventListener('click', function() {
+            document.querySelectorAll('.mood-color-option').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            currentMoodColor = this.getAttribute('data-color');
+            
+            // Add visual feedback
+            this.classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                this.classList.remove('animate__animated', 'animate__pulse');
+            }, 500);
+        });
+    });
+    
+    // Initialize shape filling
+    document.querySelectorAll('.therapy-shape').forEach(shape => {
+        shape.addEventListener('click', function() {
+            const shapeType = this.getAttribute('data-shape');
+            fillShape(shapeType, currentMoodColor);
+        });
+    });
+    
+    // Setup buttons
+    document.getElementById('saveColorTherapy').addEventListener('click', saveColorTherapy);
+    document.getElementById('clearColorTherapy').addEventListener('click', clearColorTherapy);
+    document.getElementById('exportColorTherapy').addEventListener('click', exportColorTherapy);
+    document.getElementById('closeColorTherapy').addEventListener('click', function() {
+        document.getElementById('colorTherapyContainer').style.display = 'none';
+    });
+    
+    // Load history if exists
+    if (colorTherapyHistory.length > 0) {
+        document.getElementById('therapyHistory').style.display = 'block';
+        renderColorTherapyHistory();
+    }
+}
+
+function fillShape(shapeType, color) {
+    // Add to filled shapes array
+    filledShapes.push({ shape: shapeType, color: color });
+    
+    // Create visual element in preview
+    const preview = document.getElementById('colorTherapyPreview');
+    const shapeItem = document.createElement('div');
+    shapeItem.className = 'color-therapy-item animate__animated animate__bounceIn';
+    shapeItem.style.backgroundColor = color;
+    
+    // Set shape content based on type
+    const shapeIcons = {
+        circle: '●',
+        square: '■',
+        triangle: '▲',
+        heart: '❤️',
+        cloud: '☁️',
+        spiral: '🌀'
+    };
+    
+    shapeItem.innerHTML = shapeIcons[shapeType] || '●';
+    preview.appendChild(shapeItem);
+    
+    // Update the shape grid to show it's filled
+    const shapeElement = document.querySelector(`.therapy-shape[data-shape="${shapeType}"]`);
+    shapeElement.style.backgroundColor = color;
+    shapeElement.style.borderColor = color;
+    shapeElement.classList.add('filled');
+    shapeElement.style.color = getContrastColor(color);
+    
+    // Visual feedback
+    shapeElement.classList.add('animate__animated', 'animate__bounce');
+    setTimeout(() => {
+        shapeElement.classList.remove('animate__animated', 'animate__bounce');
+    }, 1000);
+    
+    // Limit to 20 shapes
+    if (filledShapes.length > 20) {
+        const oldestShape = preview.firstChild;
+        if (oldestShape) {
+            oldestShape.remove();
+            filledShapes.shift();
+        }
+    }
+}
+
+function getContrastColor(hexColor) {
+    // Convert hex to RGB
+    const r = parseInt(hexColor.substr(1, 2), 16);
+    const g = parseInt(hexColor.substr(3, 2), 16);
+    const b = parseInt(hexColor.substr(5, 2), 16);
+    
+    // Calculate luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return black or white based on luminance
+    return luminance > 0.5 ? '#000000' : '#FFFFFF';
+}
+
+function saveColorTherapy() {
+    if (filledShapes.length === 0) {
+        alert('Create something first! Fill at least one shape with color.');
+        return;
+    }
+    
+    const therapySession = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        shapes: [...filledShapes],
+        moodScore: appState.currentMoodScore || 0,
+        colors: [...new Set(filledShapes.map(s => s.color))]
+    };
+    
+    colorTherapyHistory.push(therapySession);
+    localStorage.setItem('mindbloom_color_therapy', JSON.stringify(colorTherapyHistory));
+    
+    // Show success message
+    showSuccessMessage('Color therapy session saved!', 'var(--success)');
+    
+    // Update history display
+    document.getElementById('therapyHistory').style.display = 'block';
+    renderColorTherapyHistory();
+    
+    // Add celebration effect
+    createConfetti();
+}
+
+function clearColorTherapy() {
+    if (filledShapes.length === 0) return;
+    
+    if (confirm('Clear all filled shapes?')) {
+        filledShapes = [];
+        document.getElementById('colorTherapyPreview').innerHTML = 
+            '<p>Select a color and click a shape to fill it</p>';
+        
+        // Reset all shapes in grid
+        document.querySelectorAll('.therapy-shape').forEach(shape => {
+            shape.style.backgroundColor = '';
+            shape.style.borderColor = '';
+            shape.style.color = '';
+            shape.classList.remove('filled');
+        });
+    }
+}
+
+function exportColorTherapy() {
+    if (filledShapes.length === 0) {
+        alert('Nothing to export! Fill some shapes first.');
+        return;
+    }
+    
+    // Create a canvas representation
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+    
+    // Draw background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw title
+    ctx.fillStyle = '#1F2937';
+    ctx.font = 'bold 24px Poppins';
+    ctx.fillText('My Color Therapy Session', 50, 50);
+    
+    ctx.font = '16px Inter';
+    ctx.fillStyle = '#6B7280';
+    ctx.fillText(new Date().toLocaleDateString(), 50, 80);
+    
+    // Draw shapes
+    const shapeDrawers = {
+        circle: (ctx, x, y, size, color) => {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, size/2, 0, Math.PI * 2);
+            ctx.fill();
+        },
+        square: (ctx, x, y, size, color) => {
+            ctx.fillStyle = color;
+            ctx.fillRect(x - size/2, y - size/2, size, size);
+        },
+        triangle: (ctx, x, y, size, color) => {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x, y - size/2);
+            ctx.lineTo(x - size/2, y + size/2);
+            ctx.lineTo(x + size/2, y + size/2);
+            ctx.closePath();
+            ctx.fill();
+        },
+        heart: (ctx, x, y, size, color) => {
+            ctx.fillStyle = color;
+            ctx.font = `${size}px Arial`;
+            ctx.fillText('❤️', x - size/2, y + size/2);
+        },
+        cloud: (ctx, x, y, size, color) => {
+            ctx.fillStyle = color;
+            ctx.font = `${size}px Arial`;
+            ctx.fillText('☁️', x - size/2, y + size/2);
+        },
+        spiral: (ctx, x, y, size, color) => {
+            ctx.fillStyle = color;
+            ctx.font = `${size}px Arial`;
+            ctx.fillText('🌀', x - size/2, y + size/2);
+        }
+    };
+    
+    // Draw each shape
+    filledShapes.forEach((shapeObj, index) => {
+        const row = Math.floor(index / 4);
+        const col = index % 4;
+        const x = 150 + col * 150;
+        const y = 150 + row * 150;
+        const size = 80;
+        
+        if (shapeDrawers[shapeObj.shape]) {
+            shapeDrawers[shapeObj.shape](ctx, x, y, size, shapeObj.color);
+        }
+    });
+    
+    // Convert to image and download
+    canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `color-therapy-${new Date().toISOString().split('T')[0]}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+    
+    showSuccessMessage('Image exported successfully!', 'var(--primary)');
+}
+
+function renderColorTherapyHistory() {
+    const historyGrid = document.getElementById('therapyHistoryGrid');
+    historyGrid.innerHTML = '';
+    
+    // Show last 6 sessions
+    const recentSessions = colorTherapyHistory.slice(-6).reverse();
+    
+    recentSessions.forEach(session => {
+        const date = new Date(session.date);
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+            <div style="font-size: 12px; color: var(--gray);">
+                ${date.toLocaleDateString()}
+            </div>
+            <div style="font-weight: 500; margin: 5px 0;">
+                ${session.shapes.length} shapes
+            </div>
+            <div class="history-colors">
+                ${session.colors.slice(0, 5).map(color => 
+                    `<div class="history-color" style="background-color: ${color};"></div>`
+                ).join('')}
+            </div>
+            <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">
+                Click to view
+            </div>
+        `;
+        
+        historyItem.addEventListener('click', () => {
+            loadColorTherapySession(session);
+        });
+        
+        historyGrid.appendChild(historyItem);
+    });
+}
+
+function loadColorTherapySession(session) {
+    // Clear current
+    clearColorTherapy();
+    
+    // Load session shapes
+    session.shapes.forEach(shapeObj => {
+        fillShape(shapeObj.shape, shapeObj.color);
+    });
+    
+    showSuccessMessage('Session loaded!', 'var(--primary)');
+}
+
+// ========== FREE WRITING FUNCTIONS ==========
+let writingEntries = JSON.parse(localStorage.getItem('mindbloom_writing_entries')) || [];
+let writingTimer = null;
+let writingStartTime = null;
+let writingTimerInterval = null;
+let wordCount = 0;
+let charCount = 0;
+
+function setupFreeWriting() {
+    // Initialize text area
+    const textArea = document.getElementById('freeWritingText');
+    
+    textArea.addEventListener('input', function() {
+        updateWritingStats(this.value);
+    });
+    
+    // Initialize prompts
+    document.querySelectorAll('.prompt-option').forEach(prompt => {
+        prompt.addEventListener('click', function() {
+            document.querySelectorAll('.prompt-option').forEach(p => p.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            const promptText = this.getAttribute('data-prompt');
+            if (promptText) {
+                textArea.value = promptText + ' ';
+                textArea.focus();
+                updateWritingStats(textArea.value);
+            }
+        });
+    });
+    
+    // Initialize buttons
+    document.getElementById('saveWriting').addEventListener('click', saveWritingEntry);
+    document.getElementById('clearWriting').addEventListener('click', clearWriting);
+    document.getElementById('exportWriting').addEventListener('click', exportWriting);
+    document.getElementById('closeWriting').addEventListener('click', function() {
+        document.getElementById('freeWritingContainer').style.display = 'none';
+    });
+    
+    // Initialize mode toggles
+    document.getElementById('focusMode').addEventListener('click', toggleFocusMode);
+    document.getElementById('darkMode').addEventListener('click', toggleDarkMode);
+    document.getElementById('startTimer').addEventListener('click', startWritingTimer);
+    document.getElementById('stopTimer').addEventListener('click', stopWritingTimer);
+    
+    // Load previous entries
+    renderWritingJournal();
+}
+
+function updateWritingStats(text) {
+    // Word count
+    const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+    wordCount = words.length;
+    
+    // Character count
+    charCount = text.length;
+    
+    // Update display
+    document.getElementById('wordCount').textContent = `${wordCount} words`;
+    document.getElementById('charCount').textContent = `${charCount} characters`;
+    
+    // Typewriter sound effect
+    if (document.getElementById('typewriterSound').checked && text.length > 0) {
+        playTypewriterSound();
+    }
+}
+
+function playTypewriterSound() {
+    // Create a subtle typing sound using Web Audio API
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (e) {
+        // Fallback for browsers without Web Audio API
+        console.log('Audio not supported');
+    }
+}
+
+// function toggleFocusMode() {
+//     const container = document.getElementById('freeWritingContainer');
+//     const btn = document.getElementById('focusMode');
+    
+//     if (container.classList.contains('focus-mode')) {
+//         container.classList.remove('focus-mode');
+//         btn.innerHTML = '<i class="fas fa-eye"></i> Focus Mode';
+//         btn.style.backgroundColor = '';
+//     } else {
+//         container.classList.add('focus-mode');
+//         btn.innerHTML = '<i class="fas fa-eye-slash"></i> Exit Focus';
+//         btn.style.backgroundColor = 'var(--primary)';
+//         btn.style.color = 'white';
+//     }
+// }
+
+// function toggleDarkMode() {
+//     const container = document.getElementById('freeWritingContainer');
+//     const btn = document.getElementById('darkMode');
+    
+//     if (container.classList.contains('dark-mode')) {
+//         container.classList.remove('dark-mode');
+//         btn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+//         btn.style.backgroundColor = '';
+//     } else {
+//         container.classList.add('dark-mode');
+//         btn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+//         btn.style.backgroundColor = 'var(--dark)';
+//         btn.style.color = 'white';
+//     }
+// }
+
+function startWritingTimer() {
+    if (writingTimerInterval) return;
+    
+    writingStartTime = Date.now();
+    writingTimer = 5 * 60; // 5 minutes in seconds
+    
+    document.getElementById('startTimer').style.display = 'none';
+    document.getElementById('stopTimer').style.display = 'inline-flex';
+    
+    writingTimerInterval = setInterval(() => {
+        writingTimer--;
+        
+        const minutes = Math.floor(writingTimer / 60);
+        const seconds = writingTimer % 60;
+        document.getElementById('writingTime').textContent = 
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (writingTimer <= 0) {
+            stopWritingTimer();
+            showSuccessMessage('Time\'s up! Great writing session!', 'var(--success)');
+        }
+    }, 1000);
+}
+
+function stopWritingTimer() {
+    if (writingTimerInterval) {
+        clearInterval(writingTimerInterval);
+        writingTimerInterval = null;
+    }
+    
+    document.getElementById('startTimer').style.display = 'inline-flex';
+    document.getElementById('stopTimer').style.display = 'none';
+    document.getElementById('writingTime').textContent = '0:00';
+}
+
+function saveWritingEntry() {
+    const text = document.getElementById('freeWritingText').value.trim();
+    
+    if (!text) {
+        alert('Write something first!');
+        return;
+    }
+    
+    const entry = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        text: text,
+        wordCount: wordCount,
+        charCount: charCount,
+        mood: appState.currentMoodScore || 0,
+        timeSpent: writingStartTime ? 
+            Math.round((Date.now() - writingStartTime) / 1000) : 0
+    };
+    
+    writingEntries.push(entry);
+    localStorage.setItem('mindbloom_writing_entries', JSON.stringify(writingEntries));
+    
+    // Clear text area
+    document.getElementById('freeWritingText').value = '';
+    updateWritingStats('');
+    
+    // Show success with optional confetti
+    showSuccessMessage('Entry saved to your journal!', 'var(--success)');
+    
+    if (document.getElementById('confettiEffect').checked) {
+        createConfetti();
+    }
+    
+    // Update journal display
+    renderWritingJournal();
+}
+
+function clearWriting() {
+    const text = document.getElementById('freeWritingText').value;
+    
+    if (!text.trim()) return;
+    
+    if (confirm('Clear all text? This cannot be undone.')) {
+        document.getElementById('freeWritingText').value = '';
+        updateWritingStats('');
+    }
+}
+
+function exportWriting() {
+    const text = document.getElementById('freeWritingText').value.trim();
+    
+    if (!text && writingEntries.length === 0) {
+        alert('Nothing to export!');
+        return;
+    }
+    
+    let exportText = '=== MindBloom Free Writing Journal ===\n';
+    exportText += `Exported: ${new Date().toLocaleDateString()}\n\n`;
+    
+    if (text) {
+        exportText += '=== Current Entry ===\n';
+        exportText += text + '\n\n';
+    }
+    
+    if (writingEntries.length > 0) {
+        exportText += '=== Previous Entries ===\n\n';
+        writingEntries.slice(-10).reverse().forEach(entry => {
+            const date = new Date(entry.date);
+            exportText += `Date: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}\n`;
+            exportText += `Words: ${entry.wordCount} | Characters: ${entry.charCount}\n`;
+            exportText += `Mood Score: ${entry.mood}/35\n`;
+            exportText += '---\n';
+            exportText += entry.text + '\n\n';
+        });
+    }
+    
+    const blob = new Blob([exportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mindbloom-journal-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showSuccessMessage('Journal exported!', 'var(--primary)');
+}
+
+function renderWritingJournal() {
+    const journalEntries = document.getElementById('journalEntries');
+    journalEntries.innerHTML = '';
+    
+    if (writingEntries.length === 0) {
+        journalEntries.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--gray);">
+                <i class="fas fa-book" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i>
+                <p>Your writing journal is empty</p>
+                <p style="font-size: 14px;">Start writing above to fill your journal</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Show last 6 entries
+    const recentEntries = writingEntries.slice(-6).reverse();
+    
+    recentEntries.forEach(entry => {
+        const date = new Date(entry.date);
+        const preview = entry.text.length > 100 ? 
+            entry.text.substring(0, 100) + '...' : entry.text;
+        
+        const entryElement = document.createElement('div');
+        entryElement.className = 'journal-entry';
+        entryElement.innerHTML = `
+            <div style="font-weight: 600; font-size: 16px;">
+                ${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            </div>
+            <div class="entry-preview">
+                ${preview}
+            </div>
+            <div class="entry-date">
+                <i class="far fa-clock"></i>
+                ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                • ${entry.wordCount} words
+            </div>
+        `;
+        
+        entryElement.addEventListener('click', () => {
+            viewWritingEntry(entry);
+        });
+        
+        journalEntries.appendChild(entryElement);
+    });
+}
+
+function viewWritingEntry(entry) {
+    const date = new Date(entry.date);
+    const modal = document.createElement('div');
+    modal.className = 'entry-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        animation: fadeIn 0.3s ease;
+    `;
+    
+    modal.innerHTML = `
+        <div style="background: white; padding: 30px; border-radius: var(--border-radius); max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="color: var(--dark);">
+                    <i class="fas fa-book-open"></i> Journal Entry
+                </h3>
+                <button id="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray);">
+                    &times;
+                </button>
+            </div>
+            
+            <div style="color: var(--gray); margin-bottom: 20px; font-size: 14px;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <span><i class="far fa-calendar"></i> ${date.toLocaleDateString()}</span>
+                    <span><i class="far fa-clock"></i> ${date.toLocaleTimeString()}</span>
+                    <span><i class="fas fa-font"></i> ${entry.wordCount} words</span>
+                    <span><i class="fas fa-heartbeat"></i> Mood: ${entry.mood}/35</span>
+                </div>
+            </div>
+            
+            <div style="white-space: pre-wrap; line-height: 1.6; padding: 20px; background: var(--light); border-radius: var(--border-radius);">
+                ${entry.text}
+            </div>
+            
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button class="btn btn-outline btn-small" id="deleteEntry" style="border-color: var(--danger); color: var(--danger);">
+                    <i class="fas fa-trash-alt"></i> Delete Entry
+                </button>
+                <button class="btn btn-primary btn-small" id="copyEntry">
+                    <i class="fas fa-copy"></i> Copy Text
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners for modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    document.getElementById('copyEntry').addEventListener('click', () => {
+        navigator.clipboard.writeText(entry.text)
+            .then(() => showSuccessMessage('Text copied to clipboard!', 'var(--success)'))
+            .catch(() => alert('Failed to copy text'));
+    });
+    
+    document.getElementById('deleteEntry').addEventListener('click', () => {
+        if (confirm('Delete this journal entry permanently?')) {
+            const index = writingEntries.findIndex(e => e.id === entry.id);
+            if (index !== -1) {
+                writingEntries.splice(index, 1);
+                localStorage.setItem('mindbloom_writing_entries', JSON.stringify(writingEntries));
+                modal.remove();
+                renderWritingJournal();
+                showSuccessMessage('Entry deleted', 'var(--danger)');
+            }
+        }
+    });
+    
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// ========== HELPER FUNCTIONS ==========
+function showSuccessMessage(message, color) {
+    const successMsg = document.createElement('div');
+    successMsg.className = 'success-message';
+    successMsg.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${color};
+        color: white;
+        padding: 15px 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-hover);
+        z-index: 1001;
+        animation: slideInRight 0.5s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    `;
+    
+    successMsg.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(successMsg);
+    
+    setTimeout(() => {
+        successMsg.style.animation = 'slideOutRight 0.5s ease';
+        setTimeout(() => {
+            if (document.body.contains(successMsg)) {
+                successMsg.remove();
+            }
+        }, 500);
+    }, 3000);
+}
+
+function createConfetti() {
+    const colors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.cssText = `
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${Math.random() * 100}%;
+            animation: confetti-fall ${Math.random() * 2 + 1}s linear forwards;
+        `;
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+            if (document.body.contains(confetti)) {
+                confetti.remove();
+            }
+        }, 2000);
+    }
+}
+
+// ========== UPDATE THE TOOL CLICK HANDLER ==========
+// Update the creative tools click handler in setupNewFeatures()
+// Replace the existing handler with this:
+
+document.querySelectorAll('.creative-tool').forEach(tool => {
+    tool.addEventListener('click', function() {
+        const toolType = this.getAttribute('data-tool');
+        
+        // Hide all containers first
+        document.getElementById('drawingContainer').style.display = 'none';
+        document.getElementById('colorTherapyContainer').style.display = 'none';
+        document.getElementById('freeWritingContainer').style.display = 'none';
+        
+        if (toolType === 'draw') {
+            document.getElementById('drawingContainer').style.display = 'block';
+        } else if (toolType === 'color') {
+            document.getElementById('colorTherapyContainer').style.display = 'block';
+            // Initialize if not already done
+            if (!window.colorTherapyInitialized) {
+                setupColorTherapy();
+                window.colorTherapyInitialized = true;
+            }
+        } else if (toolType === 'write') {
+            document.getElementById('freeWritingContainer').style.display = 'block';
+            // Initialize if not already done
+            if (!window.writingInitialized) {
+                setupFreeWriting();
+                window.writingInitialized = true;
+            }
+        } else if (toolType === 'music') {
+            alert('🎵 Soundscape feature coming soon!');
+        }
+        
+        this.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+            this.classList.remove('animate__animated', 'animate__pulse');
+        }, 1000);
+    });
+});
 
             // Drawing controls
             document.getElementById('clearCanvas').addEventListener('click', clearCanvas);
@@ -852,8 +1608,7 @@ function showDeleteSuccessMessage(goalTitle) {
 
 
 
-    // <!-- Include the rest of your existing JavaScript functions here -->
-
+    
         // ========== EXISTING FUNCTIONS (from previous version) ==========
 
         function calculateMoodScore() {
@@ -1520,6 +2275,4 @@ function showDeleteSuccessMessage(goalTitle) {
             // Clamp between 7 and 35
             const clampedScore = Math.max(7, Math.min(35, roundedScore));
             return moodEmojisByScore[clampedScore] || "😐";
-
-        }  
-
+        }

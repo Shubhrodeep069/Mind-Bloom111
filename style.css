@@ -1810,3 +1810,281 @@
         max-width: 260px;
     }
 }
+
+
+
+/* ===== MOBILE CREATIVE TOOLS FIXES ===== */
+@media (max-width: 768px) {
+    /* Fix drawing canvas for mobile */
+    .drawing-canvas {
+        width: 100% !important;
+        height: 300px !important;
+        max-width: 100%;
+    }
+    
+    /* Fix drawing controls */
+    .drawing-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .drawing-controls .btn {
+        flex: 1;
+        min-width: 120px;
+        margin: 5px;
+    }
+    
+    /* Fix color therapy layout */
+    .therapy-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .color-options-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .mood-color-option {
+        height: 70px;
+        font-size: 12px;
+        padding: 8px;
+    }
+    
+    .mood-color-option span {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+    
+    .shapes-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .therapy-shape {
+        height: 80px;
+        font-size: 20px;
+    }
+    
+    .therapy-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .therapy-actions .btn {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 10px;
+    }
+    
+    /* Fix free writing layout */
+    .writing-options {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .writing-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .writing-stats {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .writing-stats span {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    .writing-modes {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #freeWritingText {
+        min-height: 250px;
+        font-size: 16px;
+        padding: 15px;
+    }
+    
+    .writing-features {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .typing-effects {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .writing-timer {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .writing-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .writing-actions .btn {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 10px;
+    }
+    
+    /* Fix tool selection grid */
+    .creative-tools {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .creative-tool {
+        padding: 20px 15px;
+    }
+    
+    .creative-tool i {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+    
+    .creative-tool h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .creative-tool p {
+        font-size: 13px;
+    }
+    
+    /* Fix preview containers */
+    .color-therapy-preview {
+        min-height: 150px;
+        padding: 15px;
+    }
+    
+    .color-therapy-item {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    /* Fix history grids */
+    .history-grid,
+    .journal-entries {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+/* ===== SMALL MOBILE FIXES (Phones under 480px) ===== */
+@media (max-width: 480px) {
+    .creative-tools {
+        grid-template-columns: 1fr;
+    }
+    
+    .color-options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .shapes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .therapy-shape {
+        height: 70px;
+    }
+    
+    .drawing-canvas {
+        height: 250px !important;
+    }
+    
+    .color-picker {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .color-option {
+        width: 35px;
+        height: 35px;
+    }
+    
+    /* Adjust button sizes */
+    .btn-small {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    /* Fix journal entries */
+    .journal-entries {
+        grid-template-columns: 1fr;
+    }
+    
+    .history-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .history-item {
+        padding: 12px;
+    }
+    
+    /* Fix writing area */
+    .prompts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .prompt-option {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+/* ===== VERY SMALL SCREENS (iPhone SE, Galaxy Fold) ===== */
+@media (max-width: 360px) {
+    .creative-tool {
+        padding: 15px 10px;
+    }
+    
+    .creative-tool i {
+        font-size: 28px;
+    }
+    
+    .creative-tool h3 {
+        font-size: 15px;
+    }
+    
+    .creative-tool p {
+        font-size: 12px;
+    }
+    
+    .drawing-canvas {
+        height: 200px !important;
+    }
+    
+    .drawing-controls .btn {
+        min-width: 100px;
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .therapy-shape {
+        height: 60px;
+        font-size: 18px;
+    }
+    
+    .mood-color-option {
+        height: 60px;
+    }
+    
+    #freeWritingText {
+        min-height: 200px;
+        font-size: 15px;
+    }
+}
